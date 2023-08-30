@@ -5,6 +5,7 @@ import com.sanitas.calculadora.controllers.CalculatorController;
 import com.sanitas.calculadora.controllers.dto.CalculationResultDTO;
 import com.sanitas.calculadora.services.CalculatorService;
 import com.sanitas.calculadora.services.mapper.CalculationResultMapper;
+import io.corp.calculator.TracerImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,12 @@ public class CalculatorControllerImpl implements CalculatorController {
 
     private final CalculationResultMapper calculationResultMapper;
 
-    public CalculatorControllerImpl(CalculatorService calculatorService, CalculationResultMapper calculationResultMapper) {
+    private final TracerImpl tracerImpl;
+
+    public CalculatorControllerImpl(CalculatorService calculatorService, CalculationResultMapper calculationResultMapper, TracerImpl tracerImpl) {
         this.calculatorService = calculatorService;
         this.calculationResultMapper = calculationResultMapper;
-
+        this.tracerImpl = tracerImpl;
     }
 
     @GetMapping("/add")
@@ -46,6 +49,7 @@ public class CalculatorControllerImpl implements CalculatorController {
         }
 
         ResponseEntity<CalculationResultDTO> response = new ResponseEntity<>(result,httpStatus);
+        tracerImpl.trace(response);
         return response;
     }
 
@@ -66,6 +70,7 @@ public class CalculatorControllerImpl implements CalculatorController {
         }
 
         ResponseEntity<CalculationResultDTO> response = new ResponseEntity<>(result,httpStatus);
+        tracerImpl.trace(response);
         return response;
     }
 
@@ -85,7 +90,7 @@ public class CalculatorControllerImpl implements CalculatorController {
         }
 
         ResponseEntity<CalculationResultDTO> response = new ResponseEntity<>(result,httpStatus);
-
+        tracerImpl.trace(response);
         return response;
     }
 
